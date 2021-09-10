@@ -9,6 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.TransformableState
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -16,6 +17,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,47 +42,30 @@ class MainActivity : ComponentActivity() {
                     }
 
                     var scale by remember { mutableStateOf(1f) }
+                    var offset by remember { mutableStateOf(Offset.Zero) }
+
                     val state =
-                        rememberTransformableState { zoomChange, panChange, rotationChange ->
+                        rememberTransformableState { zoomChange, panChange, _ ->
                             scale *= zoomChange
+                            offset += panChange
                         }
                     val scales by animateFloatAsState(targetValue = scale)
-                    var offsetX by remember { mutableStateOf(0f) }
-                    var offsetY by remember { mutableStateOf(0f) }
-                    Box(
-                        modifier = Modifier
-                            .animateContentSize()
-                          ) {
-                        AnimatedVisibility(gameVisible, exit = fadeOut(), enter = fadeIn()) {
+                    Column {
 
-                            Column {
-                                Spacer(modifier = Modifier.height(20.dp))
-                                Heading(gridSize)
-                                MainScreenInteractive(gridSize, onGridChange = {
-                                    gridSize = it
-                                }, gotoSolution = {
-                                    gameVisible = false
-                                }, scales = scales, state = state,offsetX,offsetY){x,y->
-                                    offsetX += x
-                                    offsetY += y
-                                }
-                            }
-                        }
-
-                        AnimatedVisibility(!gameVisible, exit = fadeOut(), enter = fadeIn()) {
-                            Column {
-                                Spacer(modifier = Modifier.height(20.dp))
-                                Heading(gridSize)
-                                MainScreen(gridSize, onGridChange = {
-                                    gridSize = it
-                                }, gotoGame = {
-                                    gameVisible = true
-                                }, scales = scales, state = state,offsetX,offsetY){x,y->
-                                    offsetX += x
-                                    offsetY += y
-                                }
-                            }
-                        }
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Heading(gridSize)
+                        GameScreen(
+                            gameVisible,
+                            gridSize,
+                            scales,
+                            state,
+                            offset,
+                            onGameVisibleChange = {
+                                gameVisible = it
+                            },
+                            onGridSizeChange = {
+                                gridSize = it
+                            })
                     }
 
                 }
@@ -88,6 +73,49 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+@ExperimentalFoundationApi
+@ExperimentalAnimationApi
+@Composable
+private fun GameScreen(
+    gameVisible: Boolean,
+    gridSize: Int,
+    scales: Float,
+    state: TransformableState,
+    offset: Offset,
+    onGameVisibleChange: (Boolean) -> Unit,
+    onGridSizeChange: (Int) -> Unit
+) {
+
+    Box(
+        modifier = Modifier
+            .animateContentSize()
+    ) {
+        AnimatedVisibility(gameVisible, exit = fadeOut(), enter = fadeIn()) {
+
+            Column {
+
+                MainScreenInteractive(gridSize, onGridChange = {
+                    onGridSizeChange(it)
+                }, gotoSolution = {
+                    onGameVisibleChange(false)
+                }, scales = scales, state = state, offset = offset)
+            }
+        }
+
+        AnimatedVisibility(gameVisible.not(), exit = fadeOut(), enter = fadeIn()) {
+            Column {
+
+                MainScreen(gridSize, onGridChange = {
+                    onGridSizeChange(it)
+                }, gotoGame = {
+                    onGameVisibleChange(true)
+                }, scales = scales, state = state, offset = offset)
+            }
+        }
+    }
+}
+
 
 @Composable
 fun Greeting(name: String) {

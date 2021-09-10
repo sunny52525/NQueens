@@ -4,7 +4,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.TransformableState
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -12,20 +11,17 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.consumeAllChanges
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.shaun.nqueens.R
-import kotlin.math.roundToInt
 
 
 @ExperimentalAnimationApi
@@ -39,9 +35,7 @@ fun MainScreenInteractive(
     gotoSolution: () -> Unit,
     scales: Float,
     state: TransformableState,
-    offsetX: Float,
-    offsetY: Float,
-    offsetChanges:(Float,Float)->Unit
+    offset: Offset,
 ) {
 
     var grid: ArrayList<ArrayList<Int>> by remember {
@@ -68,19 +62,17 @@ fun MainScreenInteractive(
 
 
 
-    Column(modifier = Modifier.animateContentSize() .graphicsLayer {
-        scaleX = scales
-        scaleY = scales
-    }
-        .transformable(state = state).fillMaxSize()
-        .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
-        .pointerInput(Unit) {
-            detectDragGestures { change, dragAmount ->
-                change.consumeAllChanges()
-                offsetChanges(dragAmount.x,dragAmount.y)
-
-            }
-        }) {
+    Column(modifier = Modifier
+        .animateContentSize()
+        .graphicsLayer {
+            scaleX = scales
+            scaleY = scales
+            translationX = offset.x
+            translationY = offset.y
+        }
+        .transformable(state = state)
+        .fillMaxSize()
+    ) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
