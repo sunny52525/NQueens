@@ -12,16 +12,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
-import androidx.compose.ui.graphics.Color.Companion.Green
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.shaun.nqueens.R
+import com.shaun.nqueens.sharedcode.GridInteractive
 
 
 @ExperimentalAnimationApi
@@ -45,7 +40,7 @@ fun MainScreenInteractive(
         mutableStateOf(NQueenSolution.solve(gridSize))
     }
 
-    var isDialog by remember {
+    var isShowingResultMessage by remember {
         mutableStateOf(false)
     }
 
@@ -84,8 +79,7 @@ fun MainScreenInteractive(
             GridInteractive(
                 gridSize = gridSize, grid = grid,
                 onBlockClicked = { i: Int, j: Int ->
-                    println(grid.size)
-                    printGrid(grid)
+
                     grid[j][i] = 1
 
                     val grid2: ArrayList<ArrayList<Int>> = arrayListOf()
@@ -121,7 +115,7 @@ fun MainScreenInteractive(
 
 
 
-        AnimatedVisibility(isDialog) {
+        AnimatedVisibility(isShowingResultMessage) {
             Text(
                 dialogMessage,
                 color = Black,
@@ -147,11 +141,11 @@ fun MainScreenInteractive(
                     }
 
                 }
-                if (count != gridSize) {
+                if (count < gridSize) {
                     dialogMessage =
                         "Please place ${gridSize - count} more Queens"
 
-                    isDialog = true
+                    isShowingResultMessage = true
                     return@Button
                 }
                 val result = NQueenSolution.checkSolutions(grid, gridSize)
@@ -177,14 +171,14 @@ fun MainScreenInteractive(
 
                 if (results.contains(grid.toSolution(gridSize))) {
                     dialogMessage = "Woo Hoo, You're correct"
-                    isDialog = true
+                    isShowingResultMessage = true
                 } else {
 
 
                     dialogMessage = "Uh oh , Please try Again"
 
 
-                    isDialog = true
+                    isShowingResultMessage = true
                 }
 
                 grid = grid2
@@ -222,7 +216,7 @@ fun MainScreenInteractive(
                 println(grid.size)
 
                 checkEnabled = true
-                isDialog = false
+                isShowingResultMessage = false
             }, content = {
                 Text(text = "Reset")
             })
@@ -243,126 +237,3 @@ fun MainScreenInteractive(
     }
 
 }
-
-private fun printGrid(grid: ArrayList<ArrayList<Int>>) {
-    grid.forEach {
-        it.forEach { num ->
-            print("$num ,")
-        }
-        println()
-    }
-}
-
-@ExperimentalFoundationApi
-@Composable
-fun GridInteractive(
-    gridSize: Int,
-    grid: ArrayList<ArrayList<Int>>,
-    onBlockClicked: (Int, Int) -> Unit,
-    undo: (Int, Int) -> Unit
-
-) {
-
-
-    Column(
-        modifier = Modifier
-            .wrapContentSize(unbounded = true)
-            .animateContentSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Row(
-            modifier = Modifier
-                .border(width = 1.dp, color = Color.Red)
-                .animateContentSize()
-        ) {
-            repeat(gridSize) { i ->
-                Column {
-                    repeat(gridSize) { j ->
-
-                        var blockColor by remember {
-                            mutableStateOf(White)
-                        }
-
-                        GridItemInteractive(
-                            i = i, j = j,
-                            onBlockClicked = onBlockClicked,
-                            grid = grid,
-                            gridSize = gridSize,
-                            undo = undo,
-                            blockColor = blockColor
-                        ) {
-                            blockColor = it
-                        }
-                    }
-                }
-            }
-
-        }
-    }
-}
-
-
-@ExperimentalFoundationApi
-@Composable
-fun GridItemInteractive(
-
-    i: Int,
-    j: Int,
-    onBlockClicked: (Int, Int) -> Unit,
-    grid: ArrayList<ArrayList<Int>>,
-    gridSize: Int,
-    undo: (Int, Int) -> Unit,
-    blockColor: Color,
-    onColorChange: (Color) -> Unit
-) {
-
-
-    Box(modifier = Modifier
-        .background(
-            if (grid.isNotEmpty()) {
-                when {
-                    grid[j][i] == 1 -> Green
-                    grid[j][i] == 2 -> {
-                        Color.Red
-                    }
-                    else -> {
-                        blockColor
-
-                    }
-                }
-            } else {
-                blockColor
-            }
-        )
-        .size(45.dp)
-        .border(1.dp, Green)
-        .clickable {
-
-            if (grid.isNotEmpty()) {
-
-
-                if (grid[j][i] == 1) {
-                    undo(i, j)
-                } else {
-                    onBlockClicked(i, j)
-
-                }
-            }
-        }
-    ) {
-
-        if (grid.isNotEmpty())
-            if (grid[j][i] == 1 || grid[j][i] == 2) {
-
-                Image(
-                    painter = painterResource(R.drawable.ic_queen),
-                    contentDescription = "Idea logo",
-                    contentScale = ContentScale.FillWidth,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-    }
-}
-
