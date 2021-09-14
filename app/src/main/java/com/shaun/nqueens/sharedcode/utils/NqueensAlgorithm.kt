@@ -1,3 +1,5 @@
+package com.shaun.nqueens.sharedcode.utils
+
 class NQueenSolution {
     fun solveBoard(
         board: Array<CharArray>, row: Int,
@@ -46,7 +48,7 @@ class NQueenSolution {
     companion object {
 
         fun ArrayList<ArrayList<Int>>.toSolution(N: Int): ArrayList<Int> {
-            var result: ArrayList<Int> = arrayListOf()
+            val result: ArrayList<Int> = arrayListOf()
             repeat(N) {
                 result.add(0)
             }
@@ -61,16 +63,13 @@ class NQueenSolution {
 
             }
 
-
-
-
             return result
 
         }
 
         fun checkSolutions(board: ArrayList<ArrayList<Int>>, N: Int): List<Pair<Int, Int>>? {
 
-            var result: ArrayList<Pair<Int, Int>>? = arrayListOf()
+            val result: ArrayList<Pair<Int, Int>>? = arrayListOf()
 
 
             board.forEachIndexed { i, iArray ->
@@ -161,81 +160,81 @@ class NQueenSolution {
             return result?.distinct()
         }
 
-
-        fun canCheck(board: ArrayList<ArrayList<Int>>, N: Int): Boolean {
-
-            for (i in 0 until N) {
-                var contains = false
-                for (j in 0 until N) {
-                    if (board[i][j] == 1)
-                        contains = true
-                }
-
-                if (!contains)
-                    return false
-            }
-
-            return true
-        }
-
-        fun isSafe(board: ArrayList<ArrayList<Int>>, col: Int, row: Int, N: Int): Boolean {
-
-            println("i $row , j $col ")
-            board.forEach {
-                it.forEach { num ->
-                    print("$num ,")
-                }
-                println()
-            }
-            println()
-            println()
-            /* Check this row on left side */
-
-            for (i in 0 until N) {
-                if (board[row][i] == 1)
-                    return false
-            }
-
-            for (i in 0 until N) {
-                if (board[i][col] == 1)
-                    return false
-            }
-
-
-            /* Check upper diagonal on left side */
-            var i = row
-            var j: Int = col
-            while (i >= 0 && j >= 0) {
-                if (board[i][j] == 1) return false
-                i--
-                j--
-            }
-            i = row
-            j = col
-            while (i < N && j < N) {
-                if (board[i][j] == 1) return false
-                i++
-                j++
-            }
-            /* Check lower diagonal on left side */
-            i = row
-            j = col
-            while (j >= 0 && i < N) {
-                if (board[i][j] == 1) return false
-                i++
-                j--
-            }
-
-            i = row
-            j = col
-
-            while (i >= 0 && j < N) {
-                if (board[i][j] == 1) return false
-                i--
-                j++
-            }
-            return true
-        }
+//
+//        fun canCheck(board: ArrayList<ArrayList<Int>>, N: Int): Boolean {
+//
+//            for (i in 0 until N) {
+//                var contains = false
+//                for (j in 0 until N) {
+//                    if (board[i][j] == 1)
+//                        contains = true
+//                }
+//
+//                if (!contains)
+//                    return false
+//            }
+//
+//            return true
+//        }
+//
+//        fun isSafe(board: ArrayList<ArrayList<Int>>, col: Int, row: Int, N: Int): Boolean {
+//
+//            println("i $row , j $col ")
+//            board.forEach {
+//                it.forEach { num ->
+//                    print("$num ,")
+//                }
+//                println()
+//            }
+//            println()
+//            println()
+//            /* Check this row on left side */
+//
+//            for (i in 0 until N) {
+//                if (board[row][i] == 1)
+//                    return false
+//            }
+//
+//            for (i in 0 until N) {
+//                if (board[i][col] == 1)
+//                    return false
+//            }
+//
+//
+//            /* Check upper diagonal on left side */
+//            var i = row
+//            var j: Int = col
+//            while (i >= 0 && j >= 0) {
+//                if (board[i][j] == 1) return false
+//                i--
+//                j--
+//            }
+//            i = row
+//            j = col
+//            while (i < N && j < N) {
+//                if (board[i][j] == 1) return false
+//                i++
+//                j++
+//            }
+//            /* Check lower diagonal on left side */
+//            i = row
+//            j = col
+//            while (j >= 0 && i < N) {
+//                if (board[i][j] == 1) return false
+//                i++
+//                j--
+//            }
+//
+//            i = row
+//            j = col
+//
+//            while (i >= 0 && j < N) {
+//                if (board[i][j] == 1) return false
+//                i--
+//                j++
+//            }
+//            return true
+//        }
 
         var result: ArrayList<ArrayList<Int>> = arrayListOf()
 

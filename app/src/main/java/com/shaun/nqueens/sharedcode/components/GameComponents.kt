@@ -3,12 +3,15 @@ package com.shaun.nqueens.sharedcode
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.shaun.nqueens.R
 
@@ -122,3 +125,28 @@ fun GridItemInteractive(
     }
 }
 
+
+
+@Composable
+fun Heading(gridSize: Int) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.LightGray),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Text("NQueens Visualizer", color = Color.Black, fontWeight = FontWeight.SemiBold)
+        Text(
+            text = "Place $gridSize Queens on $gridSize x $gridSize board in such a way that no two queens can attack Each Other" +
+                    "\nUse Two fingers to zoom in/out, move right, left",
+            modifier = Modifier
+                .animateContentSize()
+                .padding(8.dp),
+            textAlign = TextAlign.Center
+        )
+
+
+    }
+}

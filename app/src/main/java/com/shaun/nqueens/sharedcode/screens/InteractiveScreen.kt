@@ -1,4 +1,7 @@
-import NQueenSolution.Companion.toSolution
+package com.shaun.nqueens.sharedcode
+
+import com.shaun.nqueens.sharedcode.utils.Constants
+import com.shaun.nqueens.sharedcode.utils.NQueenSolution.Companion.toSolution
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
@@ -16,7 +19,10 @@ import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.shaun.nqueens.sharedcode.GridInteractive
+import com.shaun.nqueens.sharedcode.utils.ExtensionFunctions.clearList
+import com.shaun.nqueens.sharedcode.utils.ExtensionFunctions.countElements
+import com.shaun.nqueens.sharedcode.utils.ExtensionFunctions.fillList
+import com.shaun.nqueens.sharedcode.utils.NQueenSolution
 
 
 @ExperimentalAnimationApi
@@ -44,10 +50,10 @@ fun MainScreenInteractive(
         mutableStateOf(false)
     }
 
-    var dialogMessage by remember {
+    var resultMessage by remember {
         mutableStateOf("Uh Oh Try Again")
     }
-    var checkEnabled by remember {
+    var checkButtonEnabled by remember {
         mutableStateOf(true)
     }
 
@@ -80,36 +86,20 @@ fun MainScreenInteractive(
                 gridSize = gridSize, grid = grid,
                 onBlockClicked = { i: Int, j: Int ->
 
+                    //Force Recomposition
                     grid[j][i] = 1
-
-                    val grid2: ArrayList<ArrayList<Int>> = arrayListOf()
-
-                    repeat(gridSize) { ii ->
-                        val oneRow = arrayListOf<Int>()
-                        repeat(gridSize) { jj ->
-                            oneRow.add(grid[ii][jj])
-                        }
-                        grid2.add(oneRow)
-                    }
-
+                    val grid2: ArrayList<ArrayList<Int>> = clearList(gridSize, grid)
                     grid.clear()
-
                     grid = grid2
 
                 }, undo = { i, j ->
-                    val grid2: ArrayList<ArrayList<Int>> = arrayListOf()
+
                     grid[j][i] = 0
-
-                    repeat(gridSize) { ii ->
-                        val oneRow = arrayListOf<Int>()
-                        repeat(gridSize) { jj ->
-                            oneRow.add(grid[ii][jj])
-                        }
-                        grid2.add(oneRow)
-                    }
+                    val grid2: ArrayList<ArrayList<Int>> = clearList(gridSize, grid)
                     grid.clear()
-
                     grid = grid2
+
+
                 })
         }
 
@@ -117,7 +107,7 @@ fun MainScreenInteractive(
 
         AnimatedVisibility(isShowingResultMessage) {
             Text(
-                dialogMessage,
+                resultMessage,
                 color = Black,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
@@ -134,65 +124,37 @@ fun MainScreenInteractive(
         ) {
             Button(onClick = {
 
-                var count = 0
-                grid.forEach { iArray ->
-                    iArray.forEach { jArray ->
-                        count += jArray
-                    }
+                val count = grid.countElements()
 
-                }
                 if (count < gridSize) {
-                    dialogMessage =
+                    resultMessage =
                         "Please place ${gridSize - count} more Queens"
-
                     isShowingResultMessage = true
                     return@Button
                 }
+
                 val result = NQueenSolution.checkSolutions(grid, gridSize)
-                println(
-                    result
-                )
 
-                val grid2: ArrayList<ArrayList<Int>> = arrayListOf()
-
-                repeat(gridSize) { ii ->
-                    val oneRow = arrayListOf<Int>()
-                    repeat(gridSize) { jj ->
-                        oneRow.add(grid[ii][jj])
-                    }
-                    grid2.add(oneRow)
-                }
-                println(grid2.size)
-
+                val grid2: ArrayList<ArrayList<Int>> = clearList(gridSize, grid)
 
                 result?.forEach {
                     grid2[it.first][it.second] = 2
                 }
 
                 if (results.contains(grid.toSolution(gridSize))) {
-                    dialogMessage = "Woo Hoo, You're correct"
+                    resultMessage = "Woo Hoo, You're correct"
                     isShowingResultMessage = true
                 } else {
-
-
-                    dialogMessage = "Uh oh , Please try Again"
-
-
+                    resultMessage = "Uh oh , Please try Again"
                     isShowingResultMessage = true
                 }
 
                 grid = grid2
 
-
-                println(grid.size)
-
-
-
-
-                checkEnabled = false
+                checkButtonEnabled = false
             }, content = {
                 Text(text = "Check")
-            }, enabled = checkEnabled)
+            }, enabled = checkButtonEnabled)
 
             Spacer(modifier = Modifier.width(20.dp))
 
@@ -202,20 +164,13 @@ fun MainScreenInteractive(
 
             Spacer(modifier = Modifier.width(20.dp))
             Button(onClick = {
-                println("grisSzie" + grid.size)
-                val grid2: ArrayList<ArrayList<Int>> = arrayListOf()
-                repeat(gridSize) {
-                    val oneRow = arrayListOf<Int>()
-                    repeat(gridSize) {
-                        oneRow.add(0)
-                    }
-                    grid2.add(oneRow)
-                }
+
+                val grid2: ArrayList<ArrayList<Int>> = gridSize.fillList()
+
                 grid.clear()
                 grid = grid2
-                println(grid.size)
 
-                checkEnabled = true
+                checkButtonEnabled = true
                 isShowingResultMessage = false
             }, content = {
                 Text(text = "Reset")
