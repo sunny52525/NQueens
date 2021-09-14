@@ -1,4 +1,4 @@
-package com.shaun.nqueens.sharedcode
+package com.shaun.nqueens.sharedcode.screens
 
 import com.shaun.nqueens.sharedcode.utils.Constants
 import com.shaun.nqueens.sharedcode.utils.NQueenSolution.Companion.toSolution
@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.shaun.nqueens.sharedcode.components.GridInteractive
+import com.shaun.nqueens.sharedcode.components.GridSelector
 import com.shaun.nqueens.sharedcode.utils.ExtensionFunctions.clearList
 import com.shaun.nqueens.sharedcode.utils.ExtensionFunctions.countElements
 import com.shaun.nqueens.sharedcode.utils.ExtensionFunctions.fillList

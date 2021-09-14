@@ -1,4 +1,4 @@
-package com.shaun.nqueens.sharedcode
+package com.shaun.nqueens.sharedcode.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.*

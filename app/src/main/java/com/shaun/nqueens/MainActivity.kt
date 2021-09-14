@@ -18,9 +18,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.dp
-import com.shaun.nqueens.sharedcode.Heading
-import com.shaun.nqueens.sharedcode.MainScreen
-import com.shaun.nqueens.sharedcode.MainScreenInteractive
+import com.shaun.nqueens.sharedcode.components.Heading
+import com.shaun.nqueens.sharedcode.screens.MainScreen
+import com.shaun.nqueens.sharedcode.screens.MainScreenInteractive
 import com.shaun.nqueens.ui.theme.NQueensTheme
 
 @ExperimentalFoundationApi

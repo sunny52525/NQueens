@@ -1,4 +1,4 @@
-package com.shaun.nqueens.sharedcode
+package com.shaun.nqueens.sharedcode.screens
 
 import androidx.compose.foundation.gestures.TransformableState
 import androidx.compose.foundation.gestures.transformable
@@ -9,6 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import com.shaun.nqueens.sharedcode.components.Controller
+import com.shaun.nqueens.sharedcode.components.Grid
 import com.shaun.nqueens.sharedcode.utils.NQueenSolution
 
 
